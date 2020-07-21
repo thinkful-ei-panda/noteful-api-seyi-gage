@@ -1,5 +1,5 @@
 {
-  "name": "blogful-api",
+  "name": "noteful-api",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -23,6 +23,7 @@
     "knex": "^0.21.2",
     "morgan": "^1.10.0",
     "pg": "^8.3.0",
+    "winston": "^3.3.3",
     "xss": "^1.0.7"
   },
   "devDependencies": {

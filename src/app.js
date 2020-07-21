@@ -3,10 +3,10 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
-const { NODE_ENV } = require('./config');
-const articlesRouter = require('./articles/articles-router');
-const userRouter = require('./users/user-router');
-const commentRouter = require('./comments/comments-router');
+const { NODE_ENV, API_TOKEN } = require('./config');
+const foldersRouter = require('./folders/folders-router');
+const notesRouter = require('./notes/notes-router');
+const logger = require('./e-logger');
 
 const app = express();
 
@@ -18,13 +18,23 @@ app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
 
-app.use('/api/articles',articlesRouter);
-app.use('/api/users', userRouter);
-app.use('/api/comment', commentRouter);
+/*api-key*/
+app.use( (req,res,next) =>{
+  const token = req.get('Authorization');
+  if(!token || token.split(' ')[1] !== API_TOKEN){
+    logger.error('missing API_TOKEN');
+    res.status(401).json({error:'that\'s not allowed'} );
+  }
+  next();
+});
+
+
+app.use('/api/folders',foldersRouter);
+app.use('/api/notes', notesRouter);
 
 app.get( '/', (req,res) => {
 //   throw new Error('Error makes computer fans go brrrr');
-  res.status(200).send('OwO wi mwaking gwod pwa gwas!');
+  res.status(200).send('hello i think you have the wrong endpoint, maybe try add in /api/notes to this');
 });
 
 app.get('/xss',(req,res) => {
