@@ -10,6 +10,7 @@ const serializeArticle = article => ({
   title : xss(article.title),
   content : xss(article.content),
   date_published : article.date_published , 
+  author : article.author 
 });
 
 
@@ -24,7 +25,7 @@ articleRouter
       .catch(next);
   })
   .post( express.json() , (req, res, next) => {
-    const {title , content, style } = req.body; 
+    const {title, content, style, author } = req.body; 
     const newArticle = {title , content , style};
 
     for(const [key,value] of Object.entries(newArticle)){
@@ -37,6 +38,7 @@ articleRouter
         });
       }
     }
+    newArticle.author = author;
 
     ArticlesService.insertArticle(req.app.get('db'), newArticle)
       .then(article => {
@@ -71,7 +73,7 @@ articleRouter
     res.json(serializeArticle(res.article));  
   })
   .patch( express.json() , (req,res,next) => {
-    const {title, style , content} = req.body;
+    const {title, style , content, author} = req.body;
     const articleToUpdate = {title, style, content}; 
 
     const numberOfValues = Object.values(articleToUpdate).filter(Boolean).length;
@@ -82,6 +84,9 @@ articleRouter
         }
       });
     }
+
+    articleToUpdate.author = author;
+
     ArticlesService.updateArticle(
       req.app.get('db'),
       req.params.article_id,

@@ -5,6 +5,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const articlesRouter = require('./articles/articles-router');
+const userRouter = require('./users/user-router');
+const commentRouter = require('./comments/comments-router');
 
 const app = express();
 
@@ -17,6 +19,8 @@ app.use(helmet());
 app.use(cors());
 
 app.use('/api/articles',articlesRouter);
+app.use('/api/users', userRouter);
+app.use('/api/comment', commentRouter);
 
 app.get( '/', (req,res) => {
 //   throw new Error('Error makes computer fans go brrrr');
