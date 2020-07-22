@@ -28,3 +28,21 @@
 {"message":"throw error because content was missing","level":"error"}
 {"message":"the endpoint that was trying to be called didn't exist","level":"error"}
 {"message":"the endpoint that was trying to be called didn't exist","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"the endpoint that was trying to be called didn't exist","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"the endpoint that was trying to be called didn't exist","level":"error"}
+{"message":"throw error because note_name was missing","level":"error"}
+{"message":"throw error because folder_id was missing","level":"error"}
+{"message":"throw error because content was missing","level":"error"}
+{"message":"the endpoint that was trying to be called didn't exist","level":"error"}
+{"message":"the endpoint that was trying to be called didn't exist","level":"error"}
+{"message":"the endpoint that was trying to be called didn't exist","level":"error"}
+{"message":"throw error because note_name was missing","level":"error"}
+{"message":"throw error because folder_id was missing","level":"error"}
+{"message":"throw error because content was missing","level":"error"}
+{"message":"the endpoint that was trying to be called didn't exist","level":"error"}
+{"message":"the endpoint that was trying to be called didn't exist","level":"error"}
+{"message":"one of the required fields was missing ","level":"error"}
+{"message":"one of the required fields was missing ","level":"error"}
