@@ -298,3 +298,20 @@
 {"message":"missing API_TOKEN","level":"error"}
 {"message":"missing API_TOKEN","level":"error"}
 {"message":"missing API_TOKEN","level":"error"}
+{"message":"something went wrong since the endpoint didn't exist","level":"error"}
+{"message":"throw error because note_name was missing","level":"error"}
+{"message":"throw error because folder_id was missing","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
