@@ -8,7 +8,7 @@ const logger = require('../e-logger');
 const serializeFolder = folder => ({
   id: folder.id,
   folder_name : xss(folder.folder_name),
-  date_created : folder.date_published
+  date_created : folder.date_created
 });
 
 
@@ -23,21 +23,21 @@ foldersRouter
       .catch(next);
   })
   .post( express.json() , (req, res, next) => {
-    const {title, content, style, author } = req.body; 
-    const newFolder = {title , content , style};
+    const {folder_name , date_created } = req.body; 
 
-    for(const [key,value] of Object.entries(newFolder)){
-      // eslint-disable-next-line eqeqeq
-      if (!value) {
-        logger.error(`throw error because the body was missing ${key}`);
-        return res.status(400).json({
-          error : {
-            message : `Missing '${key}' in request body`
-          }
-        });
-      }
+    const newFolder = {folder_name};
+  
+    if (!folder_name){
+      logger.error('throw error because the body was missing folder_name');
+      return res.status(400).json({
+        error : {
+          message : 'Missing \'folder_name\' in request body'
+        }
+      });
     }
-    newFolder.author = author;
+
+    newFolder.date_created = date_created;
+    console.log('###',req.body);
 
     FoldersService.insertFolder(req.app.get('db'), newFolder)
       .then(folder => {
@@ -53,7 +53,7 @@ foldersRouter
 foldersRouter
   .route('/:folder_id')
   .all((req, res, next) => {
-    FoldersService.getById(
+    FoldersService.getFoldersById(
       req.app.get('db'),
       req.params.folder_id
     )
@@ -78,10 +78,10 @@ foldersRouter
 
     const numberOfValues = Object.values(folderToUpdate).filter(Boolean).length;
     if(numberOfValues === 0){
-      logger.error('error happend since the field wasn\'t filled out all the way and was missing something....')
+      logger.error('error happend since the field wasn\'t filled out all the way and was missing something....');
       return res.status(400).json({
         error : {
-          message : 'request body must contain at less \'title\',\'style\',\'content\' '
+          message : 'request body must contain at less the folder name '
         }
       });
     }

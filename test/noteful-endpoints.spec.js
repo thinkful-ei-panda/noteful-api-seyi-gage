@@ -8,7 +8,7 @@ const { agent } = require('supertest');
 
 
 
-describe.only('notes Endpoints', () => {
+describe('notes Endpoints', () => {
 
   let db ;
 
@@ -338,3 +338,5 @@ describe.only('notes Endpoints', () => {
   });
 
 });
+
+
