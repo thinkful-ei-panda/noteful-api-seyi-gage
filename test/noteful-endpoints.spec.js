@@ -55,24 +55,30 @@ describe.only('notes Endpoints', () => {
     });
   });
 
-  describe('GET /notes/:article_id', () => {
-    context('Given an XSS attack article', () => {
-      const maliciousArticle = {
+  describe('GET /notes/:note_id', () => {
+    context('Given an XSS attack note', () => {
+      const testFolders = makeFoldersArray();
+      const maliciousNote = {
         id : 911,
         note_name : 'Naughty naughty very naughty <script>alert("xss");</script>',
         folder_id: 1 ,
         content: 'Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.'
       };
 
-      beforeEach('insert malicious article', () => {
+      beforeEach('insert notes', () => {
         return db
-          .into('noteful_notes')
-          .insert([maliciousArticle]);
-      });
+          .into('noteful_folders')
+          .insert(testFolders)
+          .then(() => {
+            return db
+              .into('noteful_notes')
+              .insert([maliciousNote])
+          });
+      })
 
       it('removes XSS attack content', () => {
         return supertest(app)
-          .get(`/api/notes/${maliciousArticle.id}`)
+          .get(`/api/notes/${maliciousNote.id}`)
           .set('Authorization', `Bearer ${API_TOKEN}`)
           .expect(200)
           .expect(res => {
@@ -97,8 +103,6 @@ describe.only('notes Endpoints', () => {
       const testNotes = makeNotesArray();
       const testFolders = makeFoldersArray();
 
-      console.log(testNotes.date_created);
-
       beforeEach('insert notes', () => {
         return db
           .into('noteful_folders')
@@ -110,7 +114,7 @@ describe.only('notes Endpoints', () => {
           })
       })
 
-      it('responds with 200 and the specified article', () => {
+      it('responds with 200 and the specified note', () => {
         const noteId = 2;
         const expectedNote = testNotes[noteId - 1];
         return supertest(app)
@@ -122,13 +126,19 @@ describe.only('notes Endpoints', () => {
   });
   describe('POST /notes', () => {
 
-    it('should create an article, and responding with a 201 and the new article ', () =>{
+    it.only('should create an note, and responding with a 201 and the new note ', () =>{
       
       const newTestNote = {
         note_name : 'Test',
         folder_id : 2 ,
         content: 'Test new content'
       };
+
+      const testFolder = {
+        id: 2,
+        date_created: '2029-02-22T16:28:32.615Z',
+        folder_name: 'folder 2'
+      }
 
       return supertest(app)
         .post('/api/notes')
@@ -218,21 +228,21 @@ describe.only('notes Endpoints', () => {
 
     context('if given a bad/:id', ()=>{
       it('should respond with 404', ()=> {
-        const artId = 123456;
+        const noteId = 123456;
         return supertest(app)
-          .delete(`/api/notes/${artId}`)
+          .delete(`/api/notes/${noteId}`)
           .set('Authorization', `Bearer ${API_TOKEN}`)
           .expect(404, {error : {message : 'note doesn\'t exist... just like my waifu'}});
       });
     });
   });
 
-  describe('PATCH /api/articals/:notes_Id', ()=> {
+  describe('PATCH /api/notes/:notes_Id', ()=> {
     context('Given no notes', () =>{
       it('responds with 404', ()=>{
-        const article_id = 123456;
+        const note_id = 123456;
         return supertest(app)
-          .patch(`/api/notes/${article_id}`)
+          .patch(`/api/notes/${note_id}`)
           .set('Authorization', `Bearer ${API_TOKEN}`)
           .expect(404 , {error : {message : 'note doesn\'t exist... just like my waifu' }});
       });
@@ -253,14 +263,14 @@ describe.only('notes Endpoints', () => {
           })
       })
 
-      it('it should respond with 204 and updates the article', ()=>{
+      it('it should respond with 204 and updates the note', ()=>{
         const idToUpdate = 2;
         const updateNote = {
           note_name : 'updated title',
           folder_id : 3 ,
           content : 'updated content'
         };
-        const expectedArticle = {
+        const expectedNote = {
           ...testNotes[idToUpdate - 1],
           ...updateNote
         }
@@ -274,7 +284,7 @@ describe.only('notes Endpoints', () => {
             supertest(app)
             .get(`/api/notes/${idToUpdate}`)
             .set('Authorization', `Bearer ${API_TOKEN}`)
-            .expect(expectedArticle)
+            .expect(expectedNote)
             )
       });
       it('responds with a 400 when no required fields supplied', () =>{
@@ -292,7 +302,7 @@ describe.only('notes Endpoints', () => {
         const updateNote = {
           note_name : 'updated note name (good enough)'
         }
-        const expectedArticle = {
+        const expectedNote = {
           ...testNotes[idToUpdate - 1],
           ...updateNote
         }
@@ -308,7 +318,7 @@ describe.only('notes Endpoints', () => {
           supertest(app)
           .get(`/api/notes/${idToUpdate}`)
           .set('Authorization', `Bearer ${API_TOKEN}`)
-          .expect(expectedArticle)
+          .expect(expectedNote)
           )
       })
     });

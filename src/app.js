@@ -37,10 +37,10 @@ app.get( '/', (req,res) => {
   res.status(200).send('hello i think you have the wrong endpoint, maybe try add in /api/notes to this');
 });
 
-app.get('/xss',(req,res) => {
-  res.cookie('supersecretToken','6sfg8j4d6gf4h');
-  res.sendFile(__dirname + '/xss-example.html');
-});
+// app.get('/xss',(req,res) => {
+//   res.cookie('supersecretToken','6sfg8j4d6gf4h');
+//   res.sendFile(__dirname + '/xss-example.html');
+// });
 
 app.use(function errorHandler(error, req , res , next){/*eslint-disable-line*/
   let response;
