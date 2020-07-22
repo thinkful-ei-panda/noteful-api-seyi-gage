@@ -27,6 +27,7 @@ const NotesService ={
   },
     
   updateNote(db,id,newNoteFields){
+    console.log('id @',id,'newNoteFields @',newNoteFields);
     return db('noteful_notes')
       .where({id})
       .update(newNoteFields);

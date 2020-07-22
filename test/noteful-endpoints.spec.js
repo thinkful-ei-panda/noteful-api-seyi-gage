@@ -3,6 +3,9 @@ const app = require('../src/app');
 const { makeNotesArray } = require('./notes.fixtures');
 const { makeFoldersArray } = require('./folding.fixtures');
 const { API_TOKEN } = require('../src/config');
+const { agent } = require('supertest');
+
+
 
 
 describe.only('notes Endpoints', () => {
@@ -125,8 +128,19 @@ describe.only('notes Endpoints', () => {
     });
   });
   describe('POST /notes', () => {
+    
+    
+    beforeEach('insert notes', () => {
+      const testFolders = makeFoldersArray();
+      return db
+        .into('noteful_folders')
+        .insert(testFolders)
+    })
 
-    it.only('should create an note, and responding with a 201 and the new note ', () =>{
+    it('should create an note, and responding with a 201 and the new note ', () =>{
+
+
+
       
       const newTestNote = {
         note_name : 'Test',
@@ -134,21 +148,17 @@ describe.only('notes Endpoints', () => {
         content: 'Test new content'
       };
 
-      const testFolder = {
-        id: 2,
-        date_created: '2029-02-22T16:28:32.615Z',
-        folder_name: 'folder 2'
-      }
-
-      return supertest(app)
+      
+      const agent = supertest.agent(app)
+      return agent
         .post('/api/notes')
         .set('Authorization', `Bearer ${API_TOKEN}`)
         .send(newTestNote)
         .expect(201)
         .expect(res => {
-          expect(res.body.note_name).to.eql(newTestItem.note_name);
-          expect(res.body.folder_id).to.eql(newTestItem.folder_id);
-          expect(res.body.content).to.eql(newTestItem.content);
+          expect(res.body.note_name).to.eql(newTestNote.note_name);
+          expect(res.body.folder_id).to.eql(newTestNote.folder_id);
+          expect(res.body.content).to.eql(newTestNote.content);
           expect(res.body).to.have.property('id');
           expect(res.headers.location).to.eql(`/api/notes/${res.body.id}`);
           const expected = new Date().toLocaleString();
@@ -156,7 +166,7 @@ describe.only('notes Endpoints', () => {
           expect(actual).to.eql(expected);
         })
         .then(postRes =>{
-          return supertest(app)
+          return agent
             .set('Authorization', `Bearer ${API_TOKEN}`)
             .get(`/api/notes/${postRes.body.id}`)
             .expect(postRes.body);
@@ -194,6 +204,7 @@ describe.only('notes Endpoints', () => {
   });
 
   describe('DELETE /notes/:notes_id', ()=> {
+    const agent = supertest.agent(app)
   
     context('Given there are notes in the database', ()=>{
       const testNotes = makeNotesArray();
@@ -212,12 +223,13 @@ describe.only('notes Endpoints', () => {
       it('should responds with 204 and removes the target', () => {
         const idToRemove = 2;
         const expectedNotes = testNotes.filter(note => note.id !== idToRemove);
-        return supertest(app)
+
+        return agent
           .set('Authorization', `Bearer ${API_TOKEN}`)
           .delete(`/api/notes/${idToRemove}`)
           .expect(204)
           .then(res => 
-            supertest(app)
+            agent
               .get('/api/notes')
               .set('Authorization', `Bearer ${API_TOKEN}`)
               .expect(expectedNotes)
@@ -227,9 +239,10 @@ describe.only('notes Endpoints', () => {
     });
 
     context('if given a bad/:id', ()=>{
+
       it('should respond with 404', ()=> {
         const noteId = 123456;
-        return supertest(app)
+        return agent
           .delete(`/api/notes/${noteId}`)
           .set('Authorization', `Bearer ${API_TOKEN}`)
           .expect(404, {error : {message : 'note doesn\'t exist... just like my waifu'}});

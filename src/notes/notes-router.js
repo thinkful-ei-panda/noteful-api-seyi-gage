@@ -77,8 +77,9 @@ notesRouter
     res.json(serializeNotes(res.note));  
   })
   .patch( express.json() , (req,res,next) => {
-    const { text, folder_id , date_created, content} = req.body;
-    const noteToUpdate = { text, folder_id,  date_created, content }; 
+    console.log('req.body @ l80',req.body);
+    const { note_name, folder_id,  content} = req.body;
+    const noteToUpdate = { note_name, folder_id, content }; 
 
     const numberOfValues = Object.values(noteToUpdate).filter(Boolean).length;
     if(numberOfValues === 0){
