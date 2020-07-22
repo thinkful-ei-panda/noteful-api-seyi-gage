@@ -4,6 +4,7 @@ const { makeNotesArray } = require('./notes.fixtures');
 const { makeFoldersArray } = require('./folding.fixtures');
 const { API_TOKEN } = require('../src/config');
 const { agent } = require('supertest');
+const supertest = require('supertest');
 
 
 describe.only('folder Endpoints', () => {
@@ -84,19 +85,20 @@ describe.only('folder Endpoints', () => {
     describe('POST /folders', () => {
       
       
-      beforeEach('insert folders', () => {
-        const testFolders = makeFoldersArray();
-        return db
-          .into('noteful_folders')
-          .insert(testFolders)
-      })
-  
-      it('should create an note, and responding with a 201 and the new note ', () =>{
         
+        it('should create an note, and responding with a 201 and the new note ', () =>{
+            
+            beforeEach('insert folders', () => {
+              const testFolders = makeFoldersArray();
+              return db
+                .into('noteful_folders')
+                .insert(testFolders)
+            })
+
         const newTestFolder = {
           folder_name : 'Test',
         };
-        
+
         const agent = supertest.agent(app)
         return agent
           .post('/api/folders')
@@ -104,7 +106,7 @@ describe.only('folder Endpoints', () => {
           .send(newTestFolder)
           .expect(201)
           .expect(res => {
-            expect(res.body.folder_name).to.eql(newTestNote.folder_name);
+            expect(res.body.folder_name).to.eql(newTestFolder.folder_name);
             expect(res.body).to.have.property('id');
             expect(res.headers.location).to.eql(`/api/folders/${res.body.id}`);
             const expected = new Date().toLocaleString();
@@ -153,18 +155,18 @@ describe.only('folder Endpoints', () => {
       context('Given there are folder in the database', ()=>{
         const testFolders = makeFoldersArray();
   
-        beforeEach('insert notes', () => {
-          return db
-            .into('noteful_folders')
-            .insert(testFolders)
-        })
         it('should responds with 204 and removes the target', () => {
-          const idToRemove = 2;
+            beforeEach('insert notes', () => {
+              return db
+                .into('noteful_folders')
+                .insert(testFolders)
+            })
+            const idToRemove = 2;
           const expectedFolders = testFolders.filter(folder => folder.id !== idToRemove);
   
           return agent
-            .set('Authorization', `Bearer ${API_TOKEN}`)
             .delete(`/api/folders/${idToRemove}`)
+            .set('Authorization', `Bearer ${API_TOKEN}`)
             .expect(204)
             .then(res => 
               agent
@@ -189,6 +191,13 @@ describe.only('folder Endpoints', () => {
     });
   
     describe('PATCH /api/folders/:folder_Id', ()=> {
+        const testFolders = makeFoldersArray();
+  
+        beforeEach('insert folders', () => {
+          return db
+            .into('noteful_folders')
+            .insert(testFolders)
+        })
       context('Given no folders', () =>{
         it('responds with 404', ()=>{
           const note_id = 123456;
@@ -199,13 +208,7 @@ describe.only('folder Endpoints', () => {
         });
       });
       context('Given there are folders in the database', () =>{
-        const testFolders = makeFoldersArray();
-  
-        beforeEach('insert folders', () => {
-          return db
-            .into('noteful_folders')
-            .insert(testFolders)
-        })
+        
   
         it('it should respond with 204 and updates the note', ()=>{
           const idToUpdate = 2;
