@@ -315,3 +315,9 @@
 {"message":"missing API_TOKEN","level":"error"}
 {"message":"missing API_TOKEN","level":"error"}
 {"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"missing API_TOKEN","level":"error"}
+{"message":"throw error because note_name was missing","level":"error"}
+{"message":"throw error because note_name was missing","level":"error"}
+{"message":"throw error because the body was missing folder_name","level":"error"}
+{"message":"throw error because the body was missing folder_name","level":"error"}
